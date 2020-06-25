@@ -15,20 +15,19 @@ struct ContentView: View {
 			Button(action: {
 				isPlaying.toggle()
 			}, label: {
-				Text("push")
-			})
-
-			GeometryReader { geometry -> Path in
-				let edge: CGFloat = min(geometry.size.width, geometry.size.height)
-				if isPlaying {
-					return pausePath(edge: edge)
-				} else {
-					return playPath(edge: edge)
+				GeometryReader { geometry in
+					PlayButtonShape(isPlaying: self.isPlaying)
 				}
-			}.animation(.easeIn)
+			})
 		}
 
     }
+}
+
+
+struct PlayButtonShape: Shape {
+
+	var isPlaying = true
 
 	func pausePath(edge: CGFloat) -> Path {
 		Path {
@@ -52,6 +51,15 @@ struct ContentView: View {
 			path.move(to: CGPoint.zero)
 			path.addLine(to: CGPoint(x: 0, y: edge))
 			path.addLine(to: CGPoint(x: edge, y: edge/2))
+		}
+	}
+
+	func path(in rect: CGRect) -> Path {
+		let edge: CGFloat = min(rect.size.width, rect.size.height)
+		if isPlaying {
+			return pausePath(edge: edge)
+		} else {
+			return playPath(edge: edge)
 		}
 	}
 }

@@ -12,12 +12,14 @@ struct ContentView: View {
 
     var body: some View {
 		VStack {
+			PlayButtonShape(isPlaying: self.isPlaying)
+				.animation(.easeInOut(duration: 1.0))
+
 			Button(action: {
 				isPlaying.toggle()
 			}, label: {
-				GeometryReader { geometry in
-					PlayButtonShape(isPlaying: self.isPlaying)
-				}
+
+				Text("push pls")
 			})
 		}
 
@@ -28,39 +30,45 @@ struct ContentView: View {
 struct PlayButtonShape: Shape {
 
 	var isPlaying = true
+	private var state: Double
 
-	func pausePath(edge: CGFloat) -> Path {
-		Path {
-			path in
-
-			path.move(to: CGPoint(x: edge/4, y: 0))
-			path.addLine(to: CGPoint(x: edge/4, y: edge))
-			path.addLine(to: CGPoint(x: edge/2, y: edge))
-			path.addLine(to: CGPoint(x: edge/2, y: 0))
-
-			path.move(to: CGPoint(x: 3*edge/4, y: 0))
-			path.addLine(to: CGPoint(x: 3*edge/4, y: edge))
-			path.addLine(to: CGPoint(x: edge, y: edge))
-			path.addLine(to: CGPoint(x: edge, y: 0))
-
-		}
+	var animatableData: Double {
+	   get { return state }
+	   set { state = newValue }
 	}
 
-	func playPath(edge: CGFloat) -> Path {
-		Path { path in
-			path.move(to: CGPoint.zero)
-			path.addLine(to: CGPoint(x: 0, y: edge))
-			path.addLine(to: CGPoint(x: edge, y: edge/2))
-		}
+	init(isPlaying: Bool) {
+		self.isPlaying = isPlaying
+		self.state = isPlaying ? 1.0 : 0.0
+	}
+
+	func pointBetween(a: CGPoint, b: CGPoint, fraction: Double) -> CGPoint {
+		let x = a.x + (b.x - a.x) * CGFloat(fraction)
+		let y = a.y + (b.y - a.y) * CGFloat(fraction)
+		return CGPoint(x: x, y: y)
+	}
+
+	func pointBetweenWithFraction(a: CGPoint, b: CGPoint) -> CGPoint {
+		let x = a.x + (b.x - a.x) * CGFloat(state)
+		let y = a.y + (b.y - a.y) * CGFloat(state)
+		return CGPoint(x: x, y: y)
 	}
 
 	func path(in rect: CGRect) -> Path {
 		let edge: CGFloat = min(rect.size.width, rect.size.height)
-		if isPlaying {
-			return pausePath(edge: edge)
-		} else {
-			return playPath(edge: edge)
-		}
+		var path = Path()
+		path.move(to: .zero)
+		path.addLine(to: CGPoint(x: 0, y: edge))
+		path.addLine(to: pointBetweenWithFraction(a: CGPoint(x: edge/4, y: edge), b: CGPoint(x: edge/2, y: edge/4 * 3)))
+		path.addLine(to: pointBetweenWithFraction(a: CGPoint(x: edge/4, y: 0), b: CGPoint(x: edge/2, y: edge/4)))
+		path.closeSubpath()
+
+		path.move(to: pointBetweenWithFraction(a:  CGPoint(x: edge/2, y: 0), b: CGPoint(x: edge/2, y: edge/4)))
+		path.addLine(to: pointBetweenWithFraction(a: CGPoint(x: edge/2, y: edge), b: CGPoint(x: edge, y: edge/2)))
+		path.addLine(to: pointBetweenWithFraction(a: CGPoint(x: edge/4 * 3, y: edge), b: CGPoint(x: edge/2, y: edge/4 * 3)))
+		path.addLine(to: pointBetweenWithFraction(a: CGPoint(x: edge/4 * 3, y: 0), b: CGPoint(x: edge/2, y: edge/4 * 3)))
+		path.closeSubpath()
+		return path
 	}
 }
 

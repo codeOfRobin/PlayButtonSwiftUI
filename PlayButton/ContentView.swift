@@ -64,9 +64,9 @@ struct PlayButtonShape: Shape {
 		path.closeSubpath()
 
 		path.move(to: pointBetweenWithFraction(a:  CGPoint(x: edge/2, y: 0), b: CGPoint(x: edge/2, y: edge/4)))
-		path.addLine(to: pointBetweenWithFraction(a: CGPoint(x: edge/2, y: edge), b: CGPoint(x: edge, y: edge/2)))
-		path.addLine(to: pointBetweenWithFraction(a: CGPoint(x: edge/4 * 3, y: edge), b: CGPoint(x: edge/2, y: edge/4 * 3)))
-		path.addLine(to: pointBetweenWithFraction(a: CGPoint(x: edge/4 * 3, y: 0), b: CGPoint(x: edge/2, y: edge/4 * 3)))
+		path.addLine(to: pointBetweenWithFraction(a: CGPoint(x: edge/2, y: edge), b: CGPoint(x: edge/2, y: edge/4 * 3)))
+		path.addLine(to: pointBetweenWithFraction(a: CGPoint(x: edge/4 * 3, y: edge), b: CGPoint(x: edge, y: edge/2)))
+		path.addLine(to: pointBetweenWithFraction(a: CGPoint(x: edge/4 * 3, y: 0), b: CGPoint(x: edge, y: edge/2)))
 		path.closeSubpath()
 		return path
 	}

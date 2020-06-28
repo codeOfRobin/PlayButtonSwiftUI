@@ -5,6 +5,8 @@
 //  Created by Robin Malhotra on 24/06/20.
 //
 
+//https://swiftui-lab.com/swiftui-animations-part1/
+
 import SwiftUI
 
 struct ContentView: View {
